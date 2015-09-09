@@ -115,3 +115,8 @@ SOCIALACCOUNT_PROVIDERS = {
             'VERSION': 'v2.4'
         }
 }
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
