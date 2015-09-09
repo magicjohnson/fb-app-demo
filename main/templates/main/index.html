@@ -8,6 +8,7 @@
                     <div class="panel-title">
                         {% if user.is_authenticated %}
                             Welcome back {{ user.username }}
+                            <span class="pull-right"><a href="{% url 'account_logout' %}">Log out</a></span>
                         {% else %}
                             You are not logged in
                         {% endif %}

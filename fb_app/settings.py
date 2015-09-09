@@ -120,3 +120,6 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+
+# not a good idea, just for testing purposes
+ACCOUNT_LOGOUT_ON_GET = True
