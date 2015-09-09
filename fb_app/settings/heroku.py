@@ -8,5 +8,8 @@ except ImportError:
 
 DATABASES['default'] = dj_database_url.config()
 
+EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+
+
 
 
