@@ -15,9 +15,11 @@
                 </div>
 
                 <div style="padding-top:30px" class="panel-body">
-                    <div>
-                        <img src="http://placehold.it/300x300" class="img-responsive center-block"/>
-                    </div>
+                    {% if profile_image %}
+                        <div>
+                            <img src="{{ profile_image }}" class="img-responsive center-block"/>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
