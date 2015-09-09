@@ -1,10 +1,17 @@
 # coding=utf-8
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView, View
 
 from allauth.account import views as allauth_views
+from allauth.socialaccount.models import SocialApp
+from main.utils import parse_signed_request
+
+User = get_user_model()
 
 
 class IndexView(TemplateView):
@@ -31,3 +38,22 @@ class IndexView(TemplateView):
 
 class LoginView(allauth_views.LoginView):
     template_name = 'main/login.html'
+
+
+class DeauthCallbackView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeauthCallbackView, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            fb_app = SocialApp.objects.get_current('facebook')
+            data = parse_signed_request(request.POST['signed_request'], fb_app.client_id)
+            user = User.objects.get(facebook_id=data['user_id'])
+
+            user.is_active = False
+            user.save()
+            return HttpResponse()
+
+        except Exception:
+            return HttpResponseBadRequest()
