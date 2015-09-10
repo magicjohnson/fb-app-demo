@@ -1,6 +1,6 @@
 # coding=utf-8
 import logging
-from django.contrib.auth import get_user_model
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -9,11 +9,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, View
 
 from allauth.account import views as allauth_views
-from allauth.socialaccount.models import SocialApp
+from allauth.socialaccount.models import SocialApp, SocialAccount
 
 from main.utils import parse_signed_request
 
-User = get_user_model()
 logger = logging.getLogger('logger')
 
 
@@ -53,7 +52,7 @@ class DeauthCallbackView(View):
             fb_app = SocialApp.objects.get_current('facebook')
             logger.debug(request.POST['signed_request'])
             data = parse_signed_request(request.POST['signed_request'], fb_app.client_id)
-            user = User.objects.get(facebook_id=data['user_id'])
+            user = SocialAccount.objects.get(uid=data['user_id'], provider='facebook').user
 
             user.is_active = False
             user.save()
